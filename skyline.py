@@ -24,7 +24,7 @@ except configparser.NoOptionError :#except with no options error
     sys.exit(1)  #exit program on error
 
 try:#try/except block
-     browser = webdriver.Chrome(executable_path=browser)#load webdriver
+     browser = webdriver.Firefox(executable_path=browser)#load webdriver
      browser.get(website)#go to the website
      time.sleep(5)#sleep to give website time to load 
 except Exception as e:
@@ -33,7 +33,7 @@ except Exception as e:
     file_obj.close()#close text file
     sys.exit(1) #exit program
 try:#try/except block
-    content = browser.find_element_by_class_name('ui-button-text')#get content
+    content = browser.find_element_by_class_name("ui-dialog-buttonset")#get content
     content.click()#click on content
     time.sleep(5)#sleep to give website time to load 
 except Exception as e:
