@@ -79,7 +79,8 @@ try:#try/except block
     restentpad = browser.find_element_by_id('selTentPads')#get element for tents pads
     restentpad.send_keys('1')#tents pads needed
     time.sleep(5)#sleep to give website time to load 
-    content = browser.find_elements_by_class_name('avail')#get element for what available
+    content = browser.find_element_by_id('selItineraryResource')#get element for what available
+    content = content.find_elements_by_class_name('avail')
 except Exception as e:
     file_obj = open(textfile,"a") #open text file
     file_obj.write(str(datetime.datetime.now())+str(e)+" select party tent\n") #write error to text file for party tent
@@ -87,19 +88,21 @@ except Exception as e:
     sys.exit(1) #exit program
 try:#try/except block
     match=False#set match to false
+    msg =""
     for x in content:#loop thru the content that was return 
-        if x.text=="30 - Curator":#check if any available is number 30
-            msg="There might be some skyline trail availabity"#msg to sent as text
-            server = smtplib.SMTP(mailserver)#setup mailserver
-            server.ehlo()#letting other server know
-            server.starttls()#start szecure connection
-            server.login(username,password)#login with username and password for config file
-            server.sendmail(fromaddr, toaddrs, msg)#sent email
-            server.quit()#exit server      
+        text=x.text.split(' - ')[1]
+        if text=="Snowbowl" or text=="Curator" or text=="Tekarra" or text=="Signal" or text=="Watchtower" :#check if any available is number 30
+            msg=msg +text+" "#msg to sent as text               
             match=True#set match to true
     if match:
+        server = smtplib.SMTP(mailserver)#setup mailserver
+        server.ehlo()#letting other server know
+        server.starttls()#start szecure connection
+        server.login(username,password)#login with username and password for config file
+        server.sendmail(fromaddr, toaddrs, msg)#sent email
+        server.quit()#exit server 
         file_obj = open(textfile,"a") #open text file
-        file_obj.write(str(datetime.datetime.now())+" - Available\n") #write it is available
+        file_obj.write(str(datetime.datetime.now())+" "+msg+" - Available\n") #write it is available
         file_obj.close()#close text file
     else:
         file_obj = open(textfile,"a") #open text file
